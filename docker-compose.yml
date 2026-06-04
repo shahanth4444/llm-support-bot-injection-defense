@@ -1,0 +1,38 @@
+services:
+  support-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acmecorp-support-bot
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    volumes:
+      - ./reports:/app/reports
+
+  evaluator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: acmecorp-evaluator
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - ./reports:/app/reports
+    command: ["python", "-m", "tests.evaluate"]
+    profiles:
+      - evaluate

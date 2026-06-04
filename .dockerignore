@@ -1,0 +1,10 @@
+.env
+.git
+.pytest_cache
+__pycache__
+*.py[cod]
+*.pyo
+*.egg-info
+reports
+*.log
+.mypy_cache
